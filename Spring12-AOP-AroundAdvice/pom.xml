@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>org.kosa</groupId>
-	<artifactId>Spring11-AOP-Logging</artifactId>
+	<artifactId>Spring12-AOP-AroundAdvice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Spring11-AOP-Logging</name>
+	<name>Spring12-AOP-AroundAdvice</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
