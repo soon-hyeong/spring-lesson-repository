@@ -134,7 +134,7 @@
  => 다음 세가지의 기능을 합니다
 	1. @SpringBootConfiguration ==> @Configuration: 이 클래스는 스프링 설정 클래스입니다
 		@Bean 을 이용해 외부 라이브러리 (ex :DBCP)를 사용할 수 있도록 spring bean 생성 관리
-	2. ComponentScan(base package) ==> 지정한 패키지와 패키지 하위의 모든 클래스들을 스캔해서 bean 생성, DI 처리
+	2. @ComponentScan(base package) ==> 지정한 패키지와 패키지 하위의 모든 클래스들을 스캔해서 bean 생성, DI 처리
 	3. @EnableAutoConfiguration ==> 필요한 설정들을 자동으로 해줘
  
  **SpringBoot의 CommandLineRunner**                   
@@ -219,10 +219,21 @@
    DEBUG
    TRACE                     
                     
+  **MyBatisFramework**
+  Persistence Layer Framework(영속성 계층 프레임워크)로서 SQL Mapper Framework
+  													   (SQL 중심)
+  데이터베이스 연동 로직을 효율적으로 개발 할 수 있도록 지원하는 SQL Mapper Framework
+  
+  spring mybatis 의존성 관리 : maven의 pom.xml
+  spring mybatis 설정 : application.properties                  
+  
+  Java						XML Mapper					Database
+  <<interface>>				MemberMapper.xml			MySql
+  MemberMapper 
                     
-                    
-                    
-                    
+				
+     spring container               
+     Proxy 를 생성해 실행되는 구조
                     
                     
                     
