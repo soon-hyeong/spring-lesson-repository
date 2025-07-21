@@ -5,35 +5,103 @@
 		product_id, product_name, maker, price, created_at
 	</sql>
 	<select id="getTotalProductCount" resultType="int">
-		select count(1) from spring_product
+		select count(1)
+		from spring_product
 	</select>
 	<select id="findAllProductList"
 		resultType="org.kosa.myproject.domain.Product">
-		select <include refid="productColumns"></include> from
+		select
+		<include refid="productColumns"></include>
+		from
 		spring_product
 	</select>
-	<select id="findProductById" parameterType="Long" resultType="org.kosa.myproject.domain.Product">
-		select <include refid="productColumns"></include> from spring_product
+	<select id="findProductById" parameterType="Long"
+		resultType="org.kosa.myproject.domain.Product">
+		select
+		<include refid="productColumns"></include>
+		from spring_product
 		where product_id=#{productId};
 	</select>
-	<update id="updateProduct" parameterType="org.kosa.myproject.domain.Product">
+	<update id="updateProduct"
+		parameterType="org.kosa.myproject.domain.Product">
 		update spring_product
-		set product_name=#{productName}, maker=#{maker}, price=#{price}
+		set product_name=#{productName},
+		maker=#{maker}, price=#{price}
 		where product_id=#{productId}
 	</update>
-	<!-- 
-			useGeneratedKeys="true" 데이터베이스에서 자동 생성된 키를 사용하도록 설정
-			keyProperty="productId" 자동 생성된 키를 객체의 어떤 필드에 저장할지 지정(객체의 인스턴스 변수 이름)	
-	 -->
-	<insert id="registerProduct" parameterType="org.kosa.myproject.domain.Product"
-	useGeneratedKeys="true" keyProperty="productId">
-		insert into spring_product(product_name, maker, price) values(#{productName}, #{maker}, #{price})
+	<!-- useGeneratedKeys="true" 데이터베이스에서 자동 생성된 키를 사용하도록 설정 keyProperty="productId" 
+		자동 생성된 키를 객체의 어떤 필드에 저장할지 지정(객체의 인스턴스 변수 이름) -->
+	<insert id="registerProduct"
+		parameterType="org.kosa.myproject.domain.Product"
+		useGeneratedKeys="true" keyProperty="productId">
+		insert into
+		spring_product(product_name, maker, price) values(#{productName},
+		#{maker}, #{price})
 	</insert>
 	<select id="findByPriceRange">
-		select <include refid="productColumns"></include> from spring_product
+		select
+		<include refid="productColumns"></include>
+		from spring_product
 		where price between #{minPrice} and #{maxPrice}
 	</select>
-	<!-- 
-			다음주에 계속
-	 -->
+	<!-- MyBatis Dynamic SQL Study parameterType : 타입 추론하여 생략 가능 (map, vo / 
+		dto / domain , string 등 생략가능) 만약 컬렉션 계열은 타입을 명시하는 것도 좋다 -->
+	<select id="findProductsDynamic"
+		resultType="org.kosa.myproject.domain.Product">
+		SELECT
+		<include refid="productColumns"></include>
+		FROM spring_product
+		<where>
+			<if test="maker != null and product!=''">
+				AND maker = #{maker}
+			</if>
+			<if test="productName != null and product !=''">
+				AND product_name LIKE CONCAT ('%', #{productName}, '%')
+			</if>
+			<if
+				test="minPrice != null and minPrice='' and maxPrice!=null and maxPrice!=''">
+				AND price BETWEEN #{minPrice} AND #{maxPrice}
+			</if>
+			<if test="searchPrice != null and searchPrice !=''">
+				<![CDATA[
+					AND price <= #{searchPrice}
+				]]>
+			</if>
+		</where>
+		ORDER BY created_at DESC
+	</select>
+
+	<!-- Dynamic SQL update 연습 -->
+	<update id="updateProductDynamic">
+		UPDATE spring_product
+		<set>
+			<if test="maker!=null and maker!=''">
+				maker = #{maker},
+			</if>
+			<if test="productName!=null and productName!=''">
+				product_name = #{productName},
+			</if>
+			<if test="price!=null and price!=''">
+				price = #{price},
+			</if>
+		</set>
+		WHERE product_id = #{productId}
+	</update>
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
