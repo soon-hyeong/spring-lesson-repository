@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kosa.myproject.mapper.MovieMapper">
+	<select id="getTotalCount">
+		SELECT COUNT(1)
+		FROM movie;
+	</select>
+	<!-- resultMap : has a 관계 조회시 특정 객체를 처리하기 위한 기술 result column="조회 컬럼명" property="resultMap 
+		type인 Movie의 인스턴스변수가 참조하는 객체의 인스턴스변수"> -->
+	<resultMap type="org.kosa.myproject.domain.Movie"
+		id="movieAndDirectorListResultMap">
+		<!-- application.properties에 mybatis 설정 : 컬럼 underscore와 클래스 camelcase를 
+			자동 매핑해주므로 생략 가능 <result column="movie_id" property="movieId"/> <result column="title" 
+			property="title"/> -->
+		<result column="director_id" property="director.directorId" />
+		<result column="director_name" property="director.directorName" />
+	</resultMap>
+	<select id="findMovieList"
+		resultMap="movieAndDirectorListResultMap">
+		SELECT movie_id, title, director.director_id, director_name
+		FROM director join movie on director.director_id = movie.director_id
+		ORDER BY movie_id ASC
+	</select>
+	<!-- ResultMap : 영화리스트를 위한 movieAndDirectorListResultMap 을 상속받아 상세 영화(감독정보포함) 
+		정보 조회를 위한 resultMap을 만든다 상속 즉 extends 하므로 추가할 속성(컬럼)만 새로 명시하면 된다 조회할 컬럼 intro 
+		감독소개를 MovieClass의 instance variable 인 director 변수가 참조하는 객체의 intro 인스턴스 변수에 
+		할당시킨다 -->
+	<resultMap type="org.kosa.myproject.domain.Movie"
+		id="detailMovieAndDirectorResultMap"
+		extends="movieAndDirectorListResultMap">
+		<result column="intro" property="director.intro" />
+	</resultMap>
+	<!-- select 정의하고 resultMap="detailMovieAndDirectorResultMap" -->
+	<select id="findMovieById" resultMap="movieAndDirectorListResultMap">
+		 	SELECT movie_id, title, genre, attendance, m.director_id, director_name, intro
+	 		FROM movie m join director d on m.director_id=d.director_id
+	 		WHERE movie_id=#{movieId}
+	</select>
+	<!--
+		insert 구문에서 has a 관계를 사용 : Movie has a Director
+		#{director.directorId} : Movie의 instance variable director가 참조하는 객체의 directorId 변수 값으로 insert 한다
+	-->
+	<insert id="register" parameterType="org.kosa.myproject.domain.Movie">
+		INSERT INTO movie(genre, title, attendance, director_id)
+		VALUES(#{genre}, #{title}, #{attendance}, #{director.directorId})
+	</insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

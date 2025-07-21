@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kosa.myproject.mapper.DirectorMapper">
+	<select id="findAllList" resultType="org.kosa.myproject.domain.Director">
+		SELECT director_id, director_name, intro
+		FROM director;
+	</select>
+	<select id="findDirectorStatistics" resultType="map">
+	SELECT director.director_id AS directorId, director_name AS directorName,
+	SUM(attendance) AS totalAttendance, ROUND(AVG(attendance), 0) AS averageAttendance
+	FROM director join movie on director.director_id = movie.director_id
+	GROUP BY directorId, directorName
+	ORDER BY totalAttendance DESC
+	</select>
+</mapper>
