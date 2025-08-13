@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajax Basic</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+	<div class="container mt-5">
+		<form>
+			<input type="text" id="userId" required="required"
+				placeholder="고객아이디">
+			<button type="button" onclick="startAjax()">Ajax 테스트</button>
+			<br> <br>
+			<textarea rows="10" cols="50" placeholder="본문내용"></textarea>
+		</form>
+		<br>
+		<br>
+		<!--/*    ajax 응답결과를 아래 div 에 보여줄 예정  */-->
+		<div id="result"></div>
+		<!--/*   Ajax(Javascript)    */-->
+		<script>
+		function startAjax(){
+			let xhr = new XMLHttpRequest();
+			//console.log(xhr);
+			//readystate(요청부터 응답완료까지의 상태)가 변화가 있을때 움직이는 객체임.
+			//여기에 우리가 만든 콜백 함수를 등록
+			//콜백 함수는 응답 완료되면 동작되는 함수를 지칭
+			//callback의 사전적 의미는 작업 다 되면 나중에 불러줄께
+			xhr.onreadystatechange=function(){// readystate 즉 상태 변화되면 실행됨 
+				//alert(xhr.readyState);
+				// readyState는 응답 완료, status 가 200대이면 정상 수행
+				if(xhr.readyState===4 && xhr.status >= 200 && xhr.status < 300){
+					// responseText : 서버로부터 응답받은 정보
+					//alert("call back 서버로부터 받은 응답 :" + xhr.responseText);
+					//div id result에 응답 정보를 표현
+					document.getElementById("result").innerHTML = xhr.responseText;
+				}else if(xhr.readyState < 4){ // 응답 완료 4 전까지 사용성을 높이기 위해 작업중임을 나타내는 이미지를 보여준
+					document.getElementById("result").innerHTML="<img src='/images/working.gif'>";
+				}
+			}//callback
+			let userId = document.getElementById("userId").value;
+			if(userId === ""){
+				alert("아이디를 입력하세요");
+				return; // 함수 실행 중단, 즉 ajax 통신을 하지 않는다.
+			}
+			xhr.open("get", "/test-ajax1?userId=" + userId); // 서버에 비동기 요청을 위한 함수
+			xhr.send();
+		}
+		</script>
+	</div>
+</body>
+</html>
